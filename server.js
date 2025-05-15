@@ -7,8 +7,19 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ✅ CORS Options
+const corsOptions = {
+  origin: 'https://dappify.pages.dev',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  credentials: false // Set to true only if you're using cookies or auth
+};
+
+// ✅ CORS Middleware
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
 // Middleware
-app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
